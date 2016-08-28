@@ -26,7 +26,7 @@
             </a>
         </div>
         <div class="row">
-            <h3>Hello {{user.name}}</h3>
+            <h3>Hello {{request.session.email}}</h3>
             <h5>Upcoming travel:</h5>
             <table style="width:100%" class="table table-bordered text-left">
                 <thead>
@@ -64,13 +64,14 @@
                         <th>Join?</th>
                     </thead>
                     <tbody>
-                        {% for trip_user in users_trips %}
+                        {% for trip_user in trips_user %}
                         <tr>
                             <td>{{trip_user.user_created}}</td>
-                            <td><a href="/travels/destination/{{trip.id}}">{{trip_user.destination}}</a></td>
+                            <td><a href="/travels/destination/{{trip_user.id}}">{{trip_user.destination}}</a></td>
                             <td>{{trip_user.date_start}}</td>
                             <td>{{trip_user.date_to}}</td>
                             <td>{{trip_user.description}}</td>
+                            <td><a href="/travels/join/{{trip_user.id}}"><button class="btn btn-success">Join Trip</button></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

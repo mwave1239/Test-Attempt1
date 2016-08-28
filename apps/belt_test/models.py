@@ -36,6 +36,7 @@ class UserManager(models.Manager):
             pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
             user = Users.login_mgr.create(first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], pw_hash=pw_hash)
             print user
+            request.session['email'] = request.POST['email']
             # user.save()
             return (True, user)
 
@@ -72,9 +73,9 @@ class UserManager(models.Manager):
 
     def trip_valid(self, request):
         errors = []
-        if request.POST['destination'] == "":
+        if len(request.POST['destination']) < 1:
             errors.append("Destination cannot be blank!")
-        if request.POST('description') == "":
+        if len(request.POST['description']) < 1:
             errors.append("Description cannot be blank!")
         if request.POST['date_start'] < str(datetime.today()):
             errors.append("Travel date from must be in the future!")
@@ -86,8 +87,10 @@ class UserManager(models.Manager):
             print errors
             return (False, errors)
         elif len(errors) == 0:
-            trip = Trips.objects.create(destination=request.POST['destination'], description=request.POST['description'], date_start=request.POST['date_start'], date_to=request.POST['date_to'])
-            return (True, trip)
+            trip = Trips.objects.create(destination=request.POST['destination'], description=request.POST['description'], user_created=request.session['email'], date_start=request.POST['date_start'], date_to=request.POST['date_to'])
+            # trip.save()
+            print trip
+            return (True, errors, trip)
 
 class Users(models.Model):
     first_name = models.CharField(max_length=100)
@@ -99,7 +102,7 @@ class Users(models.Model):
     login_mgr = UserManager()
     objects = models.Manager()
 
-class Trips(models.Manager):
+class Trips(models.Model):
     destination = models.CharField(max_length=100)
     description = models.TextField()
     date_start = models.DateTimeField()

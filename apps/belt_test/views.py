@@ -33,6 +33,7 @@ def register(request):
         elif result[0] == True:
             # request.session.pop('errors')
             print result[1]
+            request.session['email'] = request.POST.getlist('email')
             return log_user_in(request, result[1])
 
 def log_user_in(request, user):
@@ -42,20 +43,33 @@ def log_user_in(request, user):
         'last_name' : user.last_name,
         'email' : user.email,
     }
+    request.session['email'] = user.email
     return redirect('/success')
 
 def logout(request):
     request.session.pop('user')
+    request.session.pop('email')
     return redirect('/')
 
-def travels(requet):
-    trips = Trips.objects.filter()
+def travels(request):
+    print request.session['user']
     email = request.session['email']
-    user = Users.objects.get(email=email)
-    user_id = user.id
-    trips = Trips.objects.filter(user_created=user)
+    print email
+    trips = Trips.objects.filter()
+    try:
+        user = Users.objects.get(email=email)
+        user_id = user.id
+    except:
+        user = []
+    try:
+        trips = Trips.objects.filter(user_created=email)
+    except:
+        trips = []
     trips_user = Trips.objects.all()
-    join_trip = Trip.objects.filter(users=user)
+    try:
+        join_trip = Trip.objects.filter(users=user)
+    except:
+        join_trip = []
     context = {
         'user_trips': trips,
         'joined_trip': join_trip,
@@ -69,17 +83,19 @@ def add_trip(request):
 
 def create_trip(request):
     if request.method == "POST":
-        trip = Trips.trip_mgr.trip_valid(user_created=request.session['email'], destination=request.POST['destination'], description=request.POST['description'], date_start=request.POST['date_start'], date_to=request.POST['date_to'])
+        # email = request.session['email']
+        trip = Trips.trip_mgr.trip_valid(request)
+        print trip
         if trip[0] == False:
             request.session['errors'] = trip[1]
-            return redirect('/travels')
+            return redirect('/travels/add')
         elif trip[0] == True:
             print trip[1]
             return redirect('/travels')
 
 def show_trip(request, id):
-    trips = Trips.object.get(id=id)
-    users = trips.Users.all()
+    trips = Trips.objects.get(id=id)
+    users = trips.users.all()
     print users
     context = {
         'trip' : trips,
@@ -88,9 +104,10 @@ def show_trip(request, id):
     return render(request, "belt_display/show_trip.html", context)
 
 def join_trip(request, id):
-    name =request.session['user']
-    user = Users.objects.get(name=name)
+    email =request.session['email']
+    user = Users.objects.get(email=email)
     add_user_trip = Trips.objects.get(id=id)
-    add_user_trip.Users.add(user)
-    add_user_trip.save()
+    add_user_trip.users.add(user)
+
+    # add_user_trip.save()
     return redirect('/travels')

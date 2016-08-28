@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{requset.session.email}}'s Trip</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -30,7 +32,7 @@
           <p>Description: {{trip.description}}</p>
           <p>Travel date from: {{trip.date_from}}</p>
           <p>Travel date to: {{trip.date_to}}</p>
-          <a href="{% url 'travels' %}"><button class="btn btn-primary">Return Home</button></a>
+          <h4>Other people joining you:</h4>
           {% for user in users %}
             <p>{{user.email}}</p>
           {% endfor %}

@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^travels/destination/(?P<id>\d+)/$', views.show_trip, name='show_trip'),
     url(r'^travels/add/$', views.add_trip, name='add_trip'),
     url(r'^travels/create/$', views.create_trip, name='create_trip'),
+    url(r'^travels/join/(?P<id>\d+)/$', views.join_trip, name='join_trip'),
 ]
