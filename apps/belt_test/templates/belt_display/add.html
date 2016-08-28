@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add new plan</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <a href="{% url 'travels' %}">
+                <button class="btn btn-primary">Show Travel</button>
+            </a>
+            <a href="{% url 'logout' %}">
+                <button class="btn btn-danger">Log Off</button>
+            </a>
+        </div>
+        <div class="row">
+            <h4>Add a trip:</h4>
+            <form action="{% url 'create_trip' %}" method="post">
+                {% csrf_token %}
+                <label for="destination">Destination:</label>
+                <input type="text" name="destination">
+                <label for="last_name">Description:</label>
+                <input type="text" name="description">
+                <label for="date_start">Date Start:</label>
+                <input type="date" name="date_start">
+                <label for="date_to">Date To:</label>
+                <input type="date" name="date_to">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        </div>
+        <div class="row">
+            <div class="errors">
+                {% for error in request.session.errors %}
+                <li><ul>{{error}}</ul></li>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

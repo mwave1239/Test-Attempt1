@@ -3,8 +3,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 import re
 import bcrypt
-from datetime import datetime
+
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9\.\+_-]+@[a-zA-Z0-9\._-]+\.[a-zA-Z]*$')
+
+# Create your models here.
+
 
 class UserManager(models.Manager):
 
@@ -70,24 +73,14 @@ class UserManager(models.Manager):
             errors.append("Sorry, that username or password doesn't exist!")
             return (False, errors)
 
-    def trip_valid(self, request):
-        errors = []
-        if request.POST['destination'] == "":
-            errors.append("Destination cannot be blank!")
-        if request.POST('description') == "":
-            errors.append("Description cannot be blank!")
-        if request.POST['date_start'] < str(datetime.today()):
-            errors.append("Travel date from must be in the future!")
-        if request.POST['date_to'] < str(datetime.today()):
-            errors.append("Travel date must be in the future!")
-        if request.POST['date_to'] < request.POST['date_start']:
-            errors.append("The dates must be backwards!")
-        if len(errors) is not 0:
-            print errors
-            return (False, errors)
-        elif len(errors) == 0:
-            trip = Trips.objects.create(destination=request.POST['destination'], description=request.POST['description'], date_start=request.POST['date_start'], date_to=request.POST['date_to'])
-            return (True, trip)
+    # def destroy(self, id):
+    #     e = Email.email_mgr.get(id=id)
+    #     if not e:
+    #         return (False, "Email doesn't exist")
+    #     else:
+    #         e.delete()
+    #         return (True, "Email removed")
+
 
 class Users(models.Model):
     first_name = models.CharField(max_length=100)
@@ -97,16 +90,3 @@ class Users(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     login_mgr = UserManager()
-    objects = models.Manager()
-
-class Trips(models.Manager):
-    destination = models.CharField(max_length=100)
-    description = models.TextField()
-    date_start = models.DateTimeField()
-    date_to = models.DateTimeField()
-    user_created = models.CharField(max_length=100)
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
-    users = models.ManyToManyField(Users)
-    objects = models.Manager()
-    trip_mgr = UserManager()
