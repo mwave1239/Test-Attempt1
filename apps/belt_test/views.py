@@ -44,6 +44,10 @@ def log_user_in(request, user):
         'email' : user.email,
     }
     request.session['email'] = user.email
+    try:
+        request.session.pop('errors')
+    except:
+        request.session['errors'] = []
     return redirect('/success')
 
 def logout(request):
